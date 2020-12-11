@@ -4,7 +4,7 @@ Repo for documenting setup guides (as wiki's) realted to the main themes of my r
 ##### Table of Contents  
 * [Home](https://github.com/jajukajulz/getting-started-guides/wiki)  
 * [General Cheatsheet](https://github.com/jajukajulz/getting-started-guides/wiki/General-Cheatsheet)  
-* [Getting Started with the Algorand Network and Protocol](https://github.com/jajukajulz/getting-started-guides/wiki/Getting-Started-with-Algorand-Network)
+* [Getting Started with the Algorand Network and Protocol](https://github.com/jajukajulz/getting-started-guides/wiki/Getting-Started-with-Algorand-Network-and-Protocol)
 * [Remote Desktop Support for Linux Azure VM](https://github.com/jajukajulz/getting-started-guides/wiki/Remote-Desktop-Support-for-Linux-Azure-VM)  
 * [Setting Up an Azure VM (with TEE Capability)](https://github.com/jajukajulz/getting-started-guides/wiki/Setting-Up-an-Azure-VM-(with-TEE-Capability))  
 * [Setting up SafeTrace on an Intel SGX TEE (Azure VM)](https://github.com/jajukajulz/getting-started-guides/wiki/Setting-up-SafeTrace-on-an-Intel-SGX-TEE-(Azure-VM)) 
