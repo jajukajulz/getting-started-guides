@@ -1,5 +1,5 @@
 # getting-started-guides
-Repo for documenting setup guides (as wiki's) realted to the main themes of my research interests - FinTech, Blockchain and Data Privacy.
+Repo for documenting setup guides (as wiki's) related to the main themes of my research interests - FinTech, Blockchain and Data Privacy.
 
 ##### Table of Contents  
 * [Home](https://github.com/jajukajulz/getting-started-guides/wiki)  
