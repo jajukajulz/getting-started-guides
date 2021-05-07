@@ -67,10 +67,20 @@ print("\nGenerating Synthetic Data from an asymmetric log-normal distribution an
 def generate_data(seed=17):
     # Fix the seed to reproduce the results
     rand = np.random.RandomState(seed)
+
+    # Draw samples from a log-normal distribution with specified mean, standard deviation, and array shape.
+    # Note that the mean and standard deviation are not the values for the distribution itself,
+    # but of the underlying normal distribution it is derived from.
     x = []
-    dat = rand.lognormal(0, 0.3, 1000)
+    mu, sigma, size = 0, 0.3, 1000  # mean, standard deviation, size
+    dat = rand.lognormal(mean=mu, sigma=sigma, size=size)
     x = np.concatenate((x, dat))
-    dat = rand.normal(3, 1, 1000)
+
+    #loc - (Mean) where the peak of the bell exists.
+    # scale - (Standard Deviation) how flat the graph distribution should be.
+    # size - The shape of the returned array.
+    mu, sigma = 3, 1  # mean and standard deviation
+    dat = rand.normal(loc=mu, scale=sigma, size=1000)
     x = np.concatenate((x, dat))
     return x
 
