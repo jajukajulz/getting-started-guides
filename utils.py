@@ -53,7 +53,10 @@ print(probability)
 from scipy.integrate import quad
 
 # Return the integration of a polynomial.
-#probability = quad(lambda x: np.exp(kde_model.score_samples(x)), start, end)[0]
+# The function quad is provided to integrate a function of one variable between two points
+#function = lambda x: np.exp(kde_model.score_samples(x))
+#probability = quad(function, start, end)[0]
+# (quad returns a tuple where the first index is the result,# therefore the [0])
 #print("\nIntegral of PDF i.e. Probability ( using builtin and more accurate SciPy integration methods):")
 #print(probability)
 
