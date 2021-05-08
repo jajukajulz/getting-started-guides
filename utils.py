@@ -34,9 +34,13 @@ x_test = np.linspace(start, end, N)[:, np.newaxis]
 print("\nGenerated data:")
 print(x_test)
 
+print("\nGenerated data shape:")
+print(x_test.shape)
+
 # Get PDF values for each x
 # Please note that kd.score_samples generates log-likelihood of the data samples.
 # Therefore, np.exp is needed to obtain likelihood.
+# When fitting a model your X needs to be 2D array. i.e (n_samples, n_features).
 kde_model = KernelDensity(kernel='gaussian', bandwidth=0.75).fit(x_test)
 
 kd_vals = np.exp(kde_model.score_samples(x_test))
@@ -54,11 +58,17 @@ from scipy.integrate import quad
 
 # Return the integration of a polynomial.
 # The function quad is provided to integrate a function of one variable between two points
-#function = lambda x: np.exp(kde_model.score_samples(x))
-#probability = quad(function, start, end)[0]
+
+# Reshape your data using array.reshape(-1, 1) if your data has a single feature
+
+# When you use .reshape(1, -1) it adds one dimension to the data.
+# Reshape your data using array.reshape(1, -1) if it contains a single sample
+# i.e. np.float64(x).reshape(1,-1) gives array([[ 0.]], dtype=float64) which is akin to [[x]]
+fxn = lambda x: np.exp(kde_model.score_samples(np.float64(x).reshape(1,-1)))
+probability = quad(fxn, start, end)[0]
 # (quad returns a tuple where the first index is the result,# therefore the [0])
-#print("\nIntegral of PDF i.e. Probability ( using builtin and more accurate SciPy integration methods):")
-#print(probability)
+print("\nIntegral of PDF i.e. Probability ( using builtin and more accurate SciPy integration methods):")
+print(probability)
 
 print("====================")
 # Generating Synthetic Data from 2 distributions - an asymmetric log-normal distribution and the other one is a Gaussian distribution
