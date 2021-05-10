@@ -25,16 +25,25 @@ N = 100    # Number of evaluation points
 
 # Step size
 step = (end - start) / (N - 1)
-print("\nStep size:")
-print(step)
+print("\nUniform linear distribution start=%s, end=%s, N=%s, Step size=%s" % (start, end, N,
+                                                                             step))
 
-# Generate values in the range i.e. we can generate a set of points equidistant from each other
-# and estimate the kernel density at each point.
-x_test = np.linspace(start, end, N)[:, np.newaxis]
-print("\nGenerated data:")
-print(x_test)
+# numpy.linspace - Return evenly spaced numbers over a specified interval i.e. uniformly distributed in linear space
+# numpy.logspace - Return numbers spaced evenly on a log scale i.e. uniformly distributed in log space
 
-print("\nGenerated data shape:")
+# Generate values in the range i.e. we can generate a set of points equidistant from each
+# other and estimate the kernel density at each point.
+# np.newaxis might come in handy when you want to explicitly convert a 1D array to either a row vector or a column vector,
+# make it as column vector by inserting an axis along second dimension
+
+x_test_1d = np.linspace(start, end, N)
+
+print("\nGenerated synthetic data from a uniform linear distribution:")
+print(x_test_1d)
+
+x_test = x_test_1d[:, np.newaxis] # make it as column vector by inserting an axis along second dimension
+
+print("\nShape of synthetic data from a uniform linear distribution:")
 print(x_test.shape)
 
 # Get PDF values for each x
@@ -44,13 +53,12 @@ print(x_test.shape)
 kde_model = KernelDensity(kernel='gaussian', bandwidth=0.75).fit(x_test)
 
 kd_vals = np.exp(kde_model.score_samples(x_test))
-print("\nLikelihood:")
+print("\nLikelihood from uniform linear distribution synthetic data i.e. density from KDE:")
 print(kd_vals)
-
 
 # Approximate the integral of the PDF
 probability = np.sum(kd_vals * step)
-print("\nIntegral of PDF i.e. Probability:")
+print("\nSumming the integrals of PDF from uniform linear distribution synthetic data  i.e. Probability:")
 print(probability)
 
 #Alternative using builtin SciPy integration methods
@@ -74,7 +82,7 @@ print("====================")
 # Generating Synthetic Data from 2 distributions - an asymmetric log-normal distribution and the other one is a Gaussian distribution
 print("\nGenerating Synthetic Data from an asymmetric log-normal distribution and the other one is a Gaussian distribution")
 
-def generate_data(seed=17):
+def generate_data(mu1, sigma1, size1, mu2, sigma2, size2, seed):
     # Fix the seed to reproduce the results
     rand = np.random.RandomState(seed)
 
@@ -82,37 +90,51 @@ def generate_data(seed=17):
     # Note that the mean and standard deviation are not the values for the distribution itself,
     # but of the underlying normal distribution it is derived from.
     x = []
-    mu, sigma, size = 0, 0.3, 1000  # mean, standard deviation, size
-    dat = rand.lognormal(mean=mu, sigma=sigma, size=size)
+    # mean, standard deviation, size
+    dat = rand.lognormal(mean=mu1, sigma=sigma1, size=size1)
     x = np.concatenate((x, dat))
 
     #loc - (Mean) where the peak of the bell exists.
     # scale - (Standard Deviation) how flat the graph distribution should be.
     # size - The shape of the returned array.
-    mu, sigma = 3, 1  # mean and standard deviation
-    dat = rand.normal(loc=mu, scale=sigma, size=1000)
+    # mean, standard deviation, size
+    dat = rand.normal(loc=mu2, scale=sigma2, size=size2)
     x = np.concatenate((x, dat))
     return x
 
-x_train = generate_data()[:, np.newaxis]
-print("\n Synthetic data froman asymmetric log-normal distribution and a Gaussian distribution:")
-print(x_train)
+mu1, sigma1, size1 = 0, 0.3, 1000  # mean, standard deviation, size
+mu2, sigma2, size2 = 3, 1, 1000  # mean, standard deviation, size
+seed=17
+x_train_1d = generate_data(mu1, sigma1, size1, mu2, sigma2, size2, seed) #one dimension i.e. 1d
+
+print("\n Synthetic data from an asymmetric log-normal distribution (mean=%s, sigma=%s,size=%s) and a "
+      "\n Gaussian distribution (mean=%s, standard deviation=%s, size=%s), with shape %s "
+      "and length %s:" % (mu1, sigma1, size1,mu2, sigma2, size2, x_train_1d.shape, x_train_1d.size))
+print(x_train_1d)
+x_train = x_train_1d[:, np.newaxis] # make it as column vector by inserting an axis along second dimension
+
+# ndarray.size - # Number of elements in the array. Caclulated as np.prod(a.shape), i.e., the product of the array’s dimensions.
 print("====================")
 
 # Generating Synthetic Data from two Gaussian distributions
 print("\nGenerating Synthetic Data from two Gaussian distributions")
 
-def generate_synthetic_data2(seed=17):
+def generate_synthetic_data2(mu1, sigma1, size1, mu2, sigma2, size2, seed):
     # Fix the seed to reproduce the results
     rand = np.random.RandomState(seed)
     x = []
-    dat = rand.normal(6, 1, 1000)
+    dat = rand.normal(mu1, sigma1, size1)
     x = np.concatenate((x, dat))
-    dat = rand.normal(3, 1, 1000)
+    dat = rand.normal(mu2, sigma2, size2)
     x = np.concatenate((x, dat))
     return x
 
-x_train2 = generate_synthetic_data2()[:, np.newaxis]
-print("\n Synthetic data from two Gaussian distributions:")
-print(x_train2)
+mu1, sigma1, size1 = 6, 1, 1000  # mean, standard deviation, size
+mu2, sigma2, size2 = 3, 1, 1000  # mean, standard deviation, size
+seed=17
+x_train2_1d = generate_synthetic_data2(mu1, sigma1, size1, mu2, sigma2, size2, seed)
+print("\n Synthetic data from two Gaussian distributions (mean=%s, sigma=%s,size=%s) and (mean=%s, sigma=%s,size=%s)\n"
+      "with shape %s and length %s:" % (mu1, sigma1, size1,mu2, sigma2, size2, x_train2_1d.shape, x_train2_1d.size))
+print(x_train2_1d)
+x_train2 = x_train2_1d[:, np.newaxis]
 print("====================")
