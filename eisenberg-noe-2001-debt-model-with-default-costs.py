@@ -112,14 +112,16 @@ if MODE == 'MANUAL':
     MATRIX_SIZE = NUM_AGENTS * NUM_AGENTS  # e.g. 3 x 3
 
     print("Running Debt Model to find Greatest Clearing Vector in %s mode with %s nodes..." % (MODE, NUM_AGENTS))
+
     # to find Lower Clearing Vector, edit calculate_total_payments_in_for_node() for assumption that
     # banks initially only rely on exogenous assets to settle obligations.
+    # print("Running Debt Model to find Lowest Clearing Vector in %s mode with %s nodes..." % (MODE, NUM_AGENTS))
 
     # SCENARIO = "\nScenario 1 - Initialisation with 3 nodes, no firm defaults during first round and algorithm terminates, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,1],[3,0,1],[2,5,0]]), OPERATING_CASH_FLOW_VECTOR = [5, 4, 5], and implicitly ALPHA=BETA=1)"
     # SCENARIO = "\nScenario 2 - Initialisation with 3 nodes, firm C defaults during first round and no secondary defaults, algorithm terminates round 2, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,1],[3,0,1],[2,5,0]]), OPERATING_CASH_FLOW_VECTOR = [5, 4, 2], and implicitly ALPHA=BETA=1"
-    SCENARIO = "\nScenario 3 - Firm B defaults in first round, Firm A in second round, algorithm terminates round 3, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,9],[7,0,9],[3,1,0]]), OPERATING_CASH_FLOW_VECTOR = [3, 0, 4], and implicitly ALPHA=BETA=1"
-    # SCENARIO = "\nScenario 4 - Firm B defaults in first round, Firm A in second round, algorithm terminates round 3, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,9],[7,0,9],[3,1,0]]), OPERATING_CASH_FLOW_VECTOR = [3, 0, 4], ALPHA = 0.5, BETA = 0.5"
-    # SCENARIO = "\nScenario 5 - Firm B defaults in first round, Firm A in second round, algorithm terminates round 3, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,9],[7,0,9],[3,1,0]]), OPERATING_CASH_FLOW_VECTOR = [3, 0, 4], ALPHA = 0.1, BETA = 0.9"
+    SCENARIO = "\nScenario 3 - Firm B defaults in first round, Firm A in second round, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,9],[7,0,9],[3,1,0]]), OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12], and implicitly ALPHA=BETA=1"
+    # SCENARIO = "\nScenario 4 - Firm B defaults in first round, Firm A in second round, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,9],[7,0,9],[3,1,0]]), OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12], ALPHA = 0.5, BETA = 0.5"
+    # SCENARIO = "\nScenario 5 - Firm B defaults in first round, Firm A in second round, MODE == 'MANUAL', NUM_AGENTS = 3, NOMINAL_LIABILITY_MATRIX = np.array([[0,2,9],[7,0,9],[3,1,0]]), OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12], ALPHA = 0.1, BETA = 0.9"
 
     print(SCENARIO)
 
@@ -130,11 +132,28 @@ if MODE == 'MANUAL':
     # NOMINAL_LIABILITY_MATRIX = np.array([[0,2,1],[3,0,1],[2,5,0]]) # Scenario 1
     # NOMINAL_LIABILITY_MATRIX = np.array([[0,2,1],[3,0,1],[2,5,0]]) # Scenario 2
     NOMINAL_LIABILITY_MATRIX = np.array([[0, 2, 9], [7, 0, 9], [3, 1, 0]])  # Scenario 3, 4 & 5
+    # NOMINAL_LIABILITY_MATRIX = np.array([[0,2,1],[3,0,1],[2,5,0]]) # Scenario 3, 4 & 5
+
+    SHOCK = 2  # OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12] # i.e. becomes [9, 6, 10] # Scenario 3, 4 & 5
+    # SHOCK = 4 # OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12] # i.e. becomes [7, 4, 8] # Scenario 3, 4 & 5
+    # SHOCK = 8 # OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12] # i.e. becomes [3, 0, 4] # Scenario 3, 4 & 5
+
+    print("Shock value is %s" % str(SHOCK))
+
+    OPERATING_CASHFLOW_BEFORE_SHOCK = [11, 8, 12]
+
+    # WHEN SHOCK = 2, OPERATING_CASH_FLOW_VECTOR becomes [9, 6, 10] # Scenario 3, 4 & 5
+    # WHEN SHOCK = 4, OPERATING_CASH_FLOW_VECTOR becomes [7, 4, 8] # Scenario 3, 4 & 5
+    # WHEN SHOCK = 8, OPERATING_CASH_FLOW_VECTOR becomes [3, 0, 4] # Scenario 3, 4 & 5
+    # We are testing shock 2, 4, 8 when ALPHA = 0.1 and BETA = 0.9 i.e. Scenario 5
+    # We are testing shock 2, 4, 8 when ALPHA = 1 and BETA = 1 i.e. Scenario 3
+    OPERATING_CASH_FLOW_VECTOR = [x - SHOCK for x in OPERATING_CASHFLOW_BEFORE_SHOCK]
 
     # Fix i.e. hardcode exogenous operating cashflow vector. The number of elements should match number of agents.
     # OPERATING_CASH_FLOW_VECTOR = [5, 4, 5] # Scenario 1
     # OPERATING_CASH_FLOW_VECTOR = [5, 4, 2] # Scenario 2
-    OPERATING_CASH_FLOW_VECTOR = [3, 0, 4]  # Scenario 3, 4 & 5
+    # OPERATING_CASH_FLOW_VECTOR = [3, 0, 4] # Scenario 3, 4 & 5
+    # OPERATING_CASH_FLOW_VECTOR = [5, 4, 2] # Scenario 3, 4 & 5
     # OPERATING_CASH_FLOW_VECTOR = [3, 0, 4] # Scenario 6, 7, 8, 9
 else:
     # if mode is RANDOM
@@ -166,7 +185,7 @@ else:
     EXOGENOUS_CASHFLOW_LOWER_RANGE = 0
     EXOGENOUS_CASHFLOW_UPPER_RANGE = 10
 
-    # Randomly generate exogenous operating cashflow vector
+    # Randomly generate exogenous operating cashflow vector TODO - support shock value to reduce exogenous asset value
     for row in range(0, NUM_AGENTS):
         exogenous_cash_flow = random.randint(EXOGENOUS_CASHFLOW_LOWER_RANGE, EXOGENOUS_CASHFLOW_UPPER_RANGE)
         OPERATING_CASH_FLOW_VECTOR.append(exogenous_cash_flow)
@@ -480,7 +499,7 @@ def return_total_dollar_payment_by_node(i, round):
     total_dollar_vector = return_total_dollar_payment_for_round(round)
     total_dollar_payment_by_i = total_dollar_vector[i]
     print("Total dollar payment (i.e. liabilities) by Node %s (i.e. p_%s) is %s" % (AGENT_LABELS[i], str(i + 1),
-                                                                 total_dollar_payment_by_i))
+                                                                                    total_dollar_payment_by_i))
 
     return float(total_dollar_vector[i])
 
@@ -661,13 +680,14 @@ def calculate_total_payments_in_for_node(i, round):
         else:
             # round 0 is first round
             if round == 0:
+
                 # Rogers and Veraart Lower Clearing Vector
                 # assumes banks can only rely on exogenous assets i.e. operating cash flow
                 # exogenous_assets_j = return_operating_cash_flow_for_node(column)
                 # proportion_j_i = return_single_relative_payment_in_for_node(i, column)
                 # payment_j_i = exogenous_assets_j * proportion_j_i
 
-                # Greatest Clearing Vector assumes that initially all banks meet nominal obligation
+                # Rogers and Veraart Greatest Clearing Vector assumes that initially all banks meet nominal obligation
                 payment_j_i = return_single_nominal_payment_in_for_node(i, column)
 
                 total_payments_in = total_payments_in + payment_j_i
@@ -731,11 +751,12 @@ def calculate_total_equity_for_node(i, round):
     total_cash_flow = calculate_total_cash_flow_for_node(i, round)
     total_dollar_payments_out = return_total_dollar_payment_by_node(i, round)  # actual payments not nominal
     total_equity = total_cash_flow - total_dollar_payments_out
-    EQUITY_VECTOR[round].append(total_equity )
+    EQUITY_VECTOR[round].append(total_equity)
     print("Equity Vector for round %s and Node %s" % (str(round + 1), AGENT_LABELS[i]))
     print("Equity Vector for round %s and Node %s updated with value %s i.e. "
-          "total cash flow %s  minus total payments out (liabilities) %s. \n" %
-          (str(round + 1), AGENT_LABELS[i], str(total_equity), str(total_cash_flow), str(total_dollar_payments_out)))
+          "total cash flow %s  minus total payments out (liabilities) %s.\n" %
+          (str(round + 1), AGENT_LABELS[i], str(total_equity), str(total_cash_flow),
+           str(total_dollar_payments_out)))
     return
 
 
@@ -911,8 +932,8 @@ while run_algorithm:
         print("There are defaulters in this round (i.e. round %s), algorithm will proceed for another "
               "round." % str(round + 1))
     elif payment_vectors_identical is not True:
-        print("The payment vectors for the previous round and current round (i.e. round %s) are not identical, " 
-              "algorithm will proceed for another round." %str(round + 1))
+        print("The payment vectors for the previous round and current round (i.e. round %s) are not identical, "
+              "algorithm will proceed for another round." % str(round + 1))
     else:
         if defaulters_in_round == True and new_defaults == False:
             print("There are defaulters from earlier rounds but no new defaulters in the current round, " \
@@ -1003,7 +1024,7 @@ PAYMENT_LABELS = []
 CLEARING_PAYMENT_LABELS = []
 DEFAULT_LOSSES_LABELS = []
 
-WIDTH = 0.2  # the width of the bars
+WIDTH = 0.3  # the width of the bars
 
 # setup keys for each node and each value of interest
 for node in AGENT_LABELS:
@@ -1039,6 +1060,8 @@ for index, value in enumerate(total_obligation_vector):
     GRAPH_DICT[node_key].append(value)
 
 # plot total nominal obligation
+plt.figure(figsize=(10, 10))
+
 total_nominal_obligation_legend = []
 for graph_key in graph_dict_keys:
     if graph_key in NOMINAL_OBLIGATION_LABELS:
@@ -1048,7 +1071,6 @@ for graph_key in graph_dict_keys:
 
 # display legend
 plt.legend()
-
 plt.xlabel('Node', fontsize=15)
 plt.ylabel('Total Nominal Obligation', fontsize=15)
 plt.title('Total Nominal Obligations', fontsize=15)
@@ -1068,6 +1090,7 @@ for round in EQUITY_VECTOR:
         GRAPH_DICT[node_key].append(value)
 
 # plot equity
+plt.figure(figsize=(10, 10))
 equity_legend = []
 equity_round_index = 0
 for graph_key in graph_dict_keys:
@@ -1138,6 +1161,7 @@ for round in TOTAL_DOLLAR_PAYMENT_VECTOR:
         GRAPH_DICT[node_key].append(value)
 
 # plot dollar payment vector
+plt.figure(figsize=(20, 10))
 dollar_payment_legend = []
 dollar_payment_round_index = 0
 for graph_key in graph_dict_keys:
@@ -1189,6 +1213,7 @@ for index, value in enumerate(CLEARING_PAYMENT_VECTOR):
     GRAPH_DICT[node_key].append(value)
 
 # plot clearing payment vector
+plt.figure(figsize=(10, 10))
 clearing_payment_legend = []
 for graph_key in graph_dict_keys:
     if graph_key in CLEARING_PAYMENT_LABELS:
@@ -1216,6 +1241,7 @@ for index, value in enumerate(DEFAULT_LOSSES_VECTOR):
     GRAPH_DICT[node_key].append(value)
 
 # plot default loss vector
+plt.figure(figsize=(10, 10))
 default_losses_legend = []
 for graph_key in graph_dict_keys:
     if graph_key in DEFAULT_LOSSES_LABELS:
